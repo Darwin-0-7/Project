@@ -5,7 +5,7 @@ pipeline {
         DOCKER_HUB_USER = 'darwin0407'
         APP_NAME = 'weather-tracker'
         IMAGE_TAG = "${env.BUILD_NUMBER}" 
-        DOCKER_CREDENTIALS_ID = 'Darwincr7' 
+        DOCKER_CREDENTIALS_ID = 'Darwincr7!' 
     }
 
     stages {
@@ -39,13 +39,10 @@ pipeline {
             steps {
                 script {
                     withCredentials([sshUserPrivateKey(credentialsId: 'aws-ec2-key', keyFileVariable: 'SSH_KEY')]) {
-                        // 1. Lock the key file to the Jenkins SYSTEM account
-                        // 2. Try to stop/remove old containers, but don't crash if they don't exist yet (|| exit 0)
-                        // 3. Pull the fresh image and run it
+                        // We use semicolons ';' so Linux executes every command sequentially, ignoring any "not found" errors.
                         bat """
                         icacls "%SSH_KEY%" /inheritance:r /grant SYSTEM:F
-                        ssh -i "%SSH_KEY%" -o StrictHostKeyChecking=no ubuntu@13.233.10.185 "sudo docker stop weather-app ; sudo docker rm weather-app" || exit 0
-                        ssh -i "%SSH_KEY%" -o StrictHostKeyChecking=no ubuntu@13.233.10.185 "sudo docker pull ${DOCKER_HUB_USER}/${APP_NAME}:latest && sudo docker run -d --name weather-app -p 5000:5000 ${DOCKER_HUB_USER}/${APP_NAME}:latest"
+                        ssh -i "%SSH_KEY%" -o StrictHostKeyChecking=no ubuntu@13.233.10.185 "sudo docker pull darwin0407/weather-tracker:latest ; sudo docker stop weather-app ; sudo docker rm weather-app ; sudo docker run -d --name weather-app -p 5000:5000 darwin0407/weather-tracker:latest"
                         """
                     }
                 }
