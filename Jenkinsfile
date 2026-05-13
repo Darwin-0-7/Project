@@ -40,7 +40,7 @@ pipeline {
                 script {
                     withCredentials([sshUserPrivateKey(credentialsId: 'aws-ec2-key', keyFileVariable: 'SSH_KEY')]) {
                         bat """
-                        ssh -i "%SSH_KEY%" -o StrictHostKeyChecking=no ubuntu@35.154.205.148 "sudo docker pull darwin0407/weather-tracker:latest && sudo docker stop weather-app  true && sudo docker rm weather-app  true && sudo docker run -d --name weather-app -p 5000:5000 darwin0407/weather-tracker:latest"
+                        ssh -i "%SSH_KEY%" -o StrictHostKeyChecking=no ubuntu@13.233.10.185 "sudo docker pull darwin0407/weather-tracker:latest && sudo docker stop weather-app  true && sudo docker rm weather-app  true && sudo docker run -d --name weather-app -p 5000:5000 darwin0407/weather-tracker:latest"
                         """
                     }
                 }
