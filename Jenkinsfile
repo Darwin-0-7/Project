@@ -38,7 +38,24 @@ pipeline {
             }
         }
     }
-
+        stage('Deploy to AWS EC2') {
+            steps {
+                script {
+                    // This securely loads your AWS key
+                    sshagent(['aws-ec2-key']) {
+                        // Logs into AWS, stops the old container, pulls the new one, and runs it!
+                        bat """
+                        ssh -o StrictHostKeyChecking=no ubuntu@YOUR_EC2_IP "
+                        sudo docker pull darwin0407/weather-tracker:latest && 
+                        sudo docker stop weather-app || true && 
+                        sudo docker rm weather-app || true && 
+                        sudo docker run -d --name weather-app -p 5000:5000 darwin0407/weather-tracker:latest
+                        "
+                        """
+                 }
+             }
+         }
+     }
     post {
         success {
             echo "CI Pipeline Complete! Image version ${IMAGE_TAG} is now on Docker Hub."
