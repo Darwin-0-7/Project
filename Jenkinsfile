@@ -39,10 +39,10 @@ pipeline {
             steps {
                 script {
                     withCredentials([sshUserPrivateKey(credentialsId: 'aws-ec2-key', keyFileVariable: 'SSH_KEY')]) {
-                        // We use semicolons ';' so Linux executes every command sequentially, ignoring any "not found" errors.
+                        // Added the -e flag to inject the WEATHER_API_KEY into the container
                         bat """
                         icacls "%SSH_KEY%" /inheritance:r /grant SYSTEM:F
-                        ssh -i "%SSH_KEY%" -o StrictHostKeyChecking=no ubuntu@13.233.10.185 "sudo docker pull darwin0407/weather-tracker:latest ; sudo docker stop weather-app ; sudo docker rm weather-app ; sudo docker run -d --name weather-app -p 5000:5000 darwin0407/weather-tracker:latest"
+                        ssh -i "%SSH_KEY%" -o StrictHostKeyChecking=no ubuntu@13.233.10.185 "sudo docker pull ${DOCKER_HUB_USER}/${APP_NAME}:latest ; sudo docker stop weather-app ; sudo docker rm weather-app ; sudo docker run -d --name weather-app -p 5000:5000 -e WEATHER_API_KEY='6854f09a4c28f0eafbb8493321eaf6e3' ${DOCKER_HUB_USER}/${APP_NAME}:latest"
                         """
                     }
                 }
