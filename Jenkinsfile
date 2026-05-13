@@ -6,7 +6,7 @@ pipeline {
         DOCKER_HUB_USER = 'darwin0407'
         APP_NAME = 'weather-tracker'
         IMAGE_TAG = "${env.BUILD_NUMBER}" 
-        DOCKER_CREDENTIALS_ID = 'Darwincr7!' 
+        DOCKER_CREDENTIALS_ID = 'Darwincr7' 
     }
 
     stages {
