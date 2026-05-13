@@ -5,7 +5,7 @@ pipeline {
         DOCKER_HUB_USER = 'darwin0407' // Your Docker Hub ID
         APP_NAME = 'weather-tracker'
         IMAGE_TAG = "${env.BUILD_NUMBER}" 
-        DOCKER_CREDENTIALS_ID = 'Darwincr7!' // The ID you created in Jenkins
+        DOCKER_CREDENTIALS_ID = 'Darwincr7' // The ID you created in Jenkins
     }
 
     stages {
