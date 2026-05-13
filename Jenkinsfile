@@ -38,6 +38,7 @@ pipeline {
             }
         }
     }
+       
         stage('Deploy to AWS EC2') {
             steps {
                 script {
@@ -56,6 +57,7 @@ pipeline {
              }
          }
      }
+    
     post {
         success {
             echo "CI Pipeline Complete! Image version ${IMAGE_TAG} is now on Docker Hub."
