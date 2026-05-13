@@ -5,7 +5,7 @@ pipeline {
         DOCKER_HUB_USER = 'darwin0407'
         APP_NAME = 'weather-tracker'
         IMAGE_TAG = "${env.BUILD_NUMBER}" 
-        DOCKER_CREDENTIALS_ID = 'Darwincr7' 
+        DOCKER_CREDENTIALS_ID = 'Darwincr7!' 
     }
 
     stages {
@@ -38,15 +38,15 @@ pipeline {
         stage('Deploy to AWS EC2') {
             steps {
                 script {
-                    sshagent(['aws-ec2-key']) {
+                    // Bypassing the buggy sshagent plugin by using withCredentials
+                    withCredentials([sshUserPrivateKey(credentialsId: 'aws-ec2-key', keyFileVariable: 'SSH_KEY')]) {
                         bat """
-                        ssh -o StrictHostKeyChecking=no ubuntu@YOUR_EC2_IP "sudo docker pull ${DOCKER_HUB_USER}/${APP_NAME}:latest && sudo docker stop weather-app  true && sudo docker rm weather-app  true && sudo docker run -d --name weather-app -p 5000:5000 ${DOCKER_HUB_USER}/${APP_NAME}:latest"
+                        ssh -i "%SSH_KEY%" -o StrictHostKeyChecking=no ubuntu@35.154.205.148 "sudo docker pull darwin0407/weather-tracker:latest && sudo docker stop weather-app  true && sudo docker rm weather-app  true && sudo docker run -d --name weather-app -p 5000:5000 darwin0407/weather-tracker:latest"
                         """
                     }
                 }
             }
         }
-    } // This bracket closes the 'stages' section correctly
 
     post {
         success {
