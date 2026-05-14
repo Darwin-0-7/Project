@@ -42,7 +42,7 @@ pipeline {
                         // Added the -e flag to inject the WEATHER_API_KEY into the container
                         bat """
                         icacls "%SSH_KEY%" /inheritance:r /grant SYSTEM:F
-                        ssh -i "%SSH_KEY%" -o StrictHostKeyChecking=no ubuntu@35.154.247.81 "sudo docker pull ${DOCKER_HUB_USER}/${APP_NAME}:latest ; sudo docker stop weather-app ; sudo docker rm weather-app ; sudo docker run -d --name weather-app -p 5000:5000 -e WEATHER_API_KEY='6854f09a4c28f0eafbb8493321eaf6e3' ${DOCKER_HUB_USER}/${APP_NAME}:latest"
+                        ssh -i "%SSH_KEY%" -o StrictHostKeyChecking=no ubuntu@13.201.34.110 "sudo docker pull ${DOCKER_HUB_USER}/${APP_NAME}:latest ; sudo docker stop weather-app ; sudo docker rm weather-app ; sudo docker run -d --name weather-app -p 5000:5000 -e WEATHER_API_KEY='6854f09a4c28f0eafbb8493321eaf6e3' ${DOCKER_HUB_USER}/${APP_NAME}:latest"
                         """
                     }
                 }
