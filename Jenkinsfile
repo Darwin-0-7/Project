@@ -18,8 +18,8 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    bat "docker build -t ${DOCKER_HUB_USER}/${APP_NAME}:${IMAGE_TAG} ."
-                    bat "docker tag ${DOCKER_HUB_USER}/${APP_NAME}:${IMAGE_TAG} ${DOCKER_HUB_USER}/${APP_NAME}:latest"
+                    sh "docker build -t ${DOCKER_HUB_USER}/${APP_NAME}:${IMAGE_TAG} ."
+                    sh "docker tag ${DOCKER_HUB_USER}/${APP_NAME}:${IMAGE_TAG} ${DOCKER_HUB_USER}/${APP_NAME}:latest"
                 }
             }
         }
@@ -28,8 +28,8 @@ pipeline {
             steps {
                 script {
                     docker.withRegistry('', DOCKER_CREDENTIALS_ID) {
-                        bat "docker push ${DOCKER_HUB_USER}/${APP_NAME}:${IMAGE_TAG}"
-                        bat "docker push ${DOCKER_HUB_USER}/${APP_NAME}:latest"
+                        sh "docker push ${DOCKER_HUB_USER}/${APP_NAME}:${IMAGE_TAG}"
+                        sh "docker push ${DOCKER_HUB_USER}/${APP_NAME}:latest"
                     }
                 }
             }
@@ -40,7 +40,7 @@ pipeline {
                 script {
                     withCredentials([sshUserPrivateKey(credentialsId: 'aws-ec2-key', keyFileVariable: 'SSH_KEY')]) {
                         // Added the -e flag to inject the WEATHER_API_KEY into the container
-                        bat """
+                        sh """
                         icacls "%SSH_KEY%" /inheritance:r /grant SYSTEM:F
                         ssh -i "%SSH_KEY%" -o StrictHostKeyChecking=no ubuntu@13.203.194.206 "sudo docker pull ${DOCKER_HUB_USER}/${APP_NAME}:latest ; sudo docker stop weather-app ; sudo docker rm weather-app ; sudo docker run -d --name weather-app -p 5000:5000 -e WEATHER_API_KEY='6854f09a4c28f0eafbb8493321eaf6e3' ${DOCKER_HUB_USER}/${APP_NAME}:latest"
                         """
